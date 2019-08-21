@@ -50,11 +50,12 @@ int main()
     listwnd = newwin(rows - 2, cols/3 + 1, 0, 2*cols/3);
     chatwnd = newwin(rows - 4, 2*cols/3-1, 1, 1);
     chatboxwnd = newwin(rows - 2, 2*cols/3 + 1, 0, 0);
+    writewnd = newwin(1, cols-1, rows-2, 1);
     pthread_create(&tid, NULL, AcceptMessage, NULL);
     while(cycle)
     {
         print(1);
-        getnstr(my_text, sizeof(my_text));
+        mvwgetnstr(writewnd, 0, 12, my_text, sizeof(my_text));
         strtok(my_text, "\n");
         semop(sem_id[1], user_read_lock, 2);
         strcpy(chat[size_chat - 1].buf, my_text);
@@ -87,7 +88,6 @@ int main()
 void print(int n)
 {
     int i;
-    clear();
     wclear(listwnd);
     wclear(chatwnd);
     box(wnd, '|', '-');
@@ -98,15 +98,20 @@ void print(int n)
         mvwprintw(listwnd, i + 1, 1, "%s", all_user[i].name);
     semop(sem_id[1], user_read, 1);
     for(i = 0; i < size_chat - 1; i++)
-        mvwprintw(chatwnd, i, 0, "%s: %s", chat[i].name, chat[i].buf);
-    mvwprintw(wnd, rows - 2, 2, "%s", "Enter text: ");
+        if(strcmp(chat[i].name, ""))
+            mvwprintw(chatwnd, i, 0, "%s: %s", chat[i].name, chat[i].buf);
     move(rows - 2, 14);
-    refresh();
-    wrefresh(wnd);
     wrefresh(listwnd);
     wrefresh(chatboxwnd);
     wrefresh(chatwnd);
+    if(n)
+    {
+        wclear(writewnd);
+        mvwprintw(writewnd, 0, 0, "%s", "Enter text: ");
+        wrefresh(writewnd);
+    }
 }
+
 
 void *AcceptMessage()
 {

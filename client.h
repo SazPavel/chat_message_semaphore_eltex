@@ -34,7 +34,7 @@ struct sembuf user_read[1] = {0, 0, 0};
 struct msg_buf *chat;
 int id[2], rows, cols, sem_id[2];
 struct user *all_user;
-WINDOW *wnd, *listwnd, *chatwnd, *chatboxwnd;
+WINDOW *wnd, *listwnd, *chatwnd, *chatboxwnd, *writewnd;
 void print();
 void *AcceptMessage();
 
