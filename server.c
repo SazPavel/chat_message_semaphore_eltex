@@ -73,12 +73,12 @@ void SigintHandler(int sig)
         perror("shmctl");
         exit(-1);
     }
-    if(semctl(sem_id[0], IPC_RMID, 0) == -1)
+    if(semctl(sem_id[0], 0, IPC_RMID) == -1)
     {
         perror("semctl");
         exit(-1);
     }
-    if(semctl(sem_id[1], IPC_RMID, 0) == -1)
+    if(semctl(sem_id[1], 0, IPC_RMID) == -1)
     {
         perror("semctl");
         exit(-1);
